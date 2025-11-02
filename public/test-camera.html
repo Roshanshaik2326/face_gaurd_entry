@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Camera Test</title>
+    <style>body{font-family:system-ui,Segoe UI,Roboto,Helvetica,Arial;margin:20px} .ok{color:green}.err{color:crimson}</style>
+  </head>
+  <body>
+    <h1>Camera Smoke Test</h1>
+    <p id="status">Starting...</p>
+    <video id="video" autoplay muted playsinline style="max-width:100%;border:1px solid #ccc;margin-top:10px"></video>
+    <script>
+      const status = document.getElementById('status');
+      const video = document.getElementById('video');
+      async function start() {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          status.innerHTML = '<span class="err">getUserMedia not supported in this browser.</span>';
+          return;
+        }
+        try {
+          status.textContent = 'Requesting camera permission...';
+          const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+          video.srcObject = stream;
+          status.innerHTML = '<span class="ok">Camera started — streaming.</span>';
+        } catch (err) {
+          status.innerHTML = '<span class="err">Camera error: ' + (err && err.message ? err.message : String(err)) + '</span>';
+          console.error('Camera test error', err);
+        }
+      }
+      // Auto-start after a short delay to let the page load
+      setTimeout(start, 500);
+    </script>
+  </body>
+</html>
